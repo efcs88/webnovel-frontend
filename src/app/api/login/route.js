@@ -1,29 +1,36 @@
-import { Axios } from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { request } from "node:http";
+import axios from "axios";
 
 export async function POST(request) {
     try{
         //console.log("Request: ", request)
-        const formData = await request.json();
-
-        const { email, password}
+        const user = await request.json();
+ 
+        const { email, password} = user; 
 
         const cookieStore = await cookies();
 
-        const response = await Axios.post(`${process.env.BACKEND_URL}/auth/login`,{
-            body: formData
+        const response = await axios.post(`${process.env.BACKEND_URL}/auth/login`,{
+            email: user.email,
+            password: user.password
         });
-        const data = await response.json();
-        console.log("Respuesta del servidor java: " + response);
-        cookieStore.set("accessToken", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict"
-        });
+        const data = response.data
 
-        return NextResponse.json(data, {
+        if(data){
+            console.log("Respuesta del servidor java: " + data);
+            cookieStore.set("accessToken", data.access_token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
+
+            return NextResponse.json(data, {
+                status: response.status,
+            });
+        }
+        return NextResponse.json("Not found", {
             status: response.status,
         });
     }catch(error){
