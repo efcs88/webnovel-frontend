@@ -1,0 +1,72 @@
+'use client'
+import NavBar from '@/src/components/NavBar';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react'
+
+export default function Login() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    if(response.ok){
+      router.push("/dashboard")
+    }
+  }
+
+
+
+  return (
+    <div>
+      <NavBar/>
+      <div className='flex justify-center h-screen'>
+        <form className='space-y-6' onSubmit={handleSubmit}>
+          <label>Cree una cuenta</label>
+           <div className="divider"></div>
+            <div className='form-control'>
+              <div className='mt-1'>
+                <label className='block text-sm font-medium text-gray-700'>email</label>
+                <input 
+                id='email' 
+                name='email' 
+                type='email'
+                autoComplete='email'
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder='email'
+                className='appearance-none text-white block w-150 px-3 p-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                /> 
+              </div>
+              <div className='mt-1'>
+                <label className='block text-sm font-medium text-gray-700'>Contraseña</label>
+                <input 
+                id="password" 
+                name='password' 
+                type='password'
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} 
+                placeholder='Contraseña'
+                className='appearance-none text-white block w-full px-3 p-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'/>
+              </div>
+              <button type='submit'className='btn btn-primary'>Singup</button>
+            </div>
+        </form>
+      </div>
+      
+    </div>
+  )
+}
