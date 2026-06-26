@@ -7,7 +7,9 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [messageError, setMessageError] = useState('');
   const router = useRouter();
+  
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,8 +23,15 @@ export default function Login() {
         password,
       }),
     });
+
+    const data = await response.json();
+
+    if(response.status == 401){
+      setMessageError(data.error);
+    }
+
     if(response.ok){
-      router.push("/dashboard")
+      router.push("/dashboard");
     }
   }
 
@@ -33,9 +42,10 @@ export default function Login() {
       <NavBar/>
       <div className='flex justify-center h-screen'>
         <form className='space-y-6' onSubmit={handleSubmit}>
-          <label>Cree una cuenta</label>
+          <label className='block text-2xl font-medium'>Cree una cuenta</label>
            <div className="divider"></div>
             <div className='form-control'>
+              {messageError && <label className='block text-sm font-medium text-red-600'>{messageError}</label>}
               <div className='mt-1'>
                 <label className='block text-sm font-medium text-gray-700'>email</label>
                 <input 
