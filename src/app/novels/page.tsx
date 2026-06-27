@@ -8,6 +8,7 @@ export default function Novels(){
       <div className='h-screen flex flex-col'>
         <h1 className='text-center py-4'>Novels</h1>
         <div className='flex-1 flex items-center justify-center'>
+          {}
           <ModalCrearNovela/>
           
         </div>
