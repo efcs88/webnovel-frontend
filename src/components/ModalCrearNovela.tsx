@@ -2,25 +2,33 @@
 import React, { useState } from 'react'
 import ImageUpload from './upload-image';
 import axios from 'axios';
+import { NextResponse } from 'next/server';
 
 const ModalCrearNovela = () => {
 
   const [titulo, setTitulo] = useState('');
   const [description, setDescription] = useState('');
+  const [messageError, setMessageError] = useState('');
   const  [cover, setCover] = useState<File | null>(null);
   const formData = new FormData();
 
   const handleCreate: React.SubmitEventHandler<HTMLFormElement> =  async(e) => {
     e.preventDefault();
-    formData.append("tittle", titulo);
+    formData.append("title", titulo);
     formData.append("description", description);
     if(cover){
-      formData.append("cover", cover);
+      formData.append("imagen", cover)
     }
-    console.log(formData);
-    await axios.post(`/api/novelas`, FormData)
+    const response = await fetch("/api/registrar-novela",{
+      method: "POST",
+      body:formData,
+    });
+    const data = await response.json();
+    
+    if(response.status == 401){
+      setMessageError(data.console.error());
+    }
   }
-
   return (
     <>
         <button
