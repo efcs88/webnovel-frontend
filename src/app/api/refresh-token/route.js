@@ -1,17 +1,30 @@
-import { cookies, headers } from "next/headers";
+import axios from "axios";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function POST(request) {
-    try{
+export async function POST() {
+    try {
         const cookieStore = await cookies();
-        const refreshToken = cookieStore.get('refreshToken');
+        const refreshToken = cookieStore.get("refreshToken");
 
-        const response = await axios.post(`${process.env.BACKEND_URL}/auth/refresh`, {
-            headers: {
-                "Authorization": `Bearer ${refreshToken}`
+        if (!refreshToken) {
+            return NextResponse.json(
+                { error: "Refresh token not found" },
+                { status: 401 }
+            );
+        }
+        const response = await axios.post(
+            `${process.env.BACKEND_URL}/auth/refresh`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${refreshToken.value}`,
+                },
             }
-        });
-        cookieStore.set("accessToken", data.access_token,{
+        );
+        const data = response.data;
+
+        cookieStore.set("accessToken", data.access_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
@@ -19,7 +32,7 @@ export async function POST(request) {
             maxAge: 60 * 60,
         });
 
-        cookieStore.set("refreshToken", data.refresh_token,{
+        cookieStore.set("refreshToken", data.refresh_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
@@ -28,15 +41,19 @@ export async function POST(request) {
         });
 
         return NextResponse.json(data, {
-            status: response.status
+            status: response.status,
         });
-    }catch(error){
-        const status = error.response?.status || 500;
-        const message = error.response?.data || "Internal Server Error"
 
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return NextResponse.json(
+                { error: error.response?.data },
+                { status: error.response?.status || 500 }
+            );
+        }
         return NextResponse.json(
-            {error: message},
-            {status: status}
-        )
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }

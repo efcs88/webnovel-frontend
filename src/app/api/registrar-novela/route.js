@@ -11,7 +11,7 @@ export async function POST(request) {
     const cookieStore = await cookies();
 
     const token = cookieStore.get("accessToken");
-    console.log(token);
+
     const response = await axios.post(
         `${process.env.BACKEND_URL}/novels`,
         formData,
