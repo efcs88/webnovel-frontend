@@ -8,11 +8,13 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [messageError, setMessageError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     const response = await fetch("/api/login", {
       method: "POST",
       headers: {
@@ -69,7 +71,16 @@ export default function Login() {
                 placeholder='Contraseña'
                 className='appearance-none text-white block w-full px-3 p-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'/>
               </div>
-              <button type='submit'className='btn btn-primary'>Singup</button>
+              {isLoading ? (
+                <div className='mt-2 flex justify-center items-center'>
+                  <span className='loading loading-spinner loading-md'></span>
+                  <button type='submit' disabled={true} className='btn btn-primary'>Singup</button>
+                </div>
+              ) : (
+                <div className='mt-2 flex justify-center items-center'>
+                  <button type='submit' className='btn btn-primary'>Singup</button>
+                </div>
+              )}
             </div>
         </form>
       </div>
