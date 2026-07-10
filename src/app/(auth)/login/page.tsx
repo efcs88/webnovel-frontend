@@ -31,7 +31,10 @@ export default function Login() {
     if(response.status == 401){
       setMessageError(data.error);
     }
-
+    if(response.status == 500){
+      setMessageError("Error interno del servidor intente mas tarde");
+      router.refresh();
+    }
     if(response.ok){
       router.push("/dashboard");
     }

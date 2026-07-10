@@ -4,36 +4,33 @@ import SideBar from '@/src/components/SideBar';
 import ModalCrearNovela from '@/src/components/ModalCrearNovela';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 interface Novel{
-  id:number;
-  title:string;
-  description:string;
-  coverImage:string;
+  id:number,
+  title:string,
+  description:string,
+  coverImage:string
 }
 
 export default function Novels() {
 
   const [novels, setNovels] = useState<Novel[]>([]);
-  
+  const router = useRouter();
 
   const getNovels = async () => {
+
     try {
       const response = await axios.get("/api/get-novels");
-      console.log(response.data);
       setNovels(response.data);
-       console.log(JSON.stringify(response.data, null, 2));
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log("Status:", error.response?.status);
-        console.log("Data:", error.response?.data);
+        //console.log("Status:", error.response?.status);
+        //console.log("Data:", error.response?.data);
         if (error.response?.status === 403) {
           try {
             const refreshResponse = await axios.post("/api/refresh-token");
-            console.log("Refresh:", refreshResponse.data);
-            
             const response = await axios.get("/api/get-novels");
-            console.log(response.data);
             setNovels(response.data);
           } catch (refreshError) {
             console.log("Error al refrescar el token:", refreshError);
@@ -49,7 +46,10 @@ export default function Novels() {
     getNovels();
   }, []);
 
- 
+  const verNovela = (id: number) => {
+    router.push(`/novels/${id}/chapters`);
+  }
+
   return (
     <SideBar>
       <div className='h-screen flex flex-col'>
@@ -66,7 +66,7 @@ export default function Novels() {
                       <div>{novel.title}</div>
                       <div className="text-xs font-semibold opacity-60 truncate ...">{novel.description}</div>
                     </div>
-                    <button className="btn btn-primary btn-ghost">
+                    <button onClick={() => verNovela(novel.id)} className="btn btn-primary btn-ghost">
                       Ver
                     </button>
                     <button className="btn btn-error btn-ghost">
