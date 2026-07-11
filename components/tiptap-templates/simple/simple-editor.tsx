@@ -13,7 +13,7 @@ import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
-
+import { JSONContent } from "@tiptap/core"
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button"
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer"
@@ -108,13 +108,16 @@ const MainToolbarContent = ({
         <MarkButton type="bold" />
         <MarkButton type="italic" />
         <MarkButton type="strike" />
-        <MarkButton type="underline" />
-        {!isMobile ? (
-          <ColorHighlightPopover />
-        ) : (
-          <ColorHighlightPopoverButton onClick={onHighlighterClick} />
-        )}
-        {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
+        {
+          <MarkButton type="underline" />
+        }
+        {//!isMobile ? (
+         // <ColorHighlightPopover />
+        //) : (
+        //  <ColorHighlightPopoverButton onClick={onHighlighterClick} />
+       // )}
+        //{!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />
+        }
       </ToolbarGroup>
 
       <ToolbarSeparator />
@@ -132,7 +135,12 @@ const MainToolbarContent = ({
         <TextAlignButton align="right" />
         <TextAlignButton align="justify" />
       </ToolbarGroup>
-
+      {
+      //<ToolbarGroup>
+      //  <ThemeToggle />
+      //</ToolbarGroup>
+      }
+      
       <ToolbarSeparator />
       {
       //<ToolbarGroup>
@@ -143,9 +151,7 @@ const MainToolbarContent = ({
 
       {isMobile && <ToolbarSeparator />}
 
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
+
     </>
   )
 }
@@ -180,8 +186,8 @@ const MobileToolbarContent = ({
 )
 
 interface SimpleEditorProps{
-  content?: string;
-  onChange?: (content: string) => void;
+  content?: JSONContent;
+  onChange?: (content: JSONContent) => void;
 }
 
 export function SimpleEditor({ content, onChange, }: SimpleEditorProps) {
@@ -231,7 +237,7 @@ export function SimpleEditor({ content, onChange, }: SimpleEditorProps) {
     ],
     content,
     onUpdate: ({ editor }) => {
-      onChange?.(JSON.stringify(editor.getJSON()));
+      onChange?.(editor.getJSON());
     }
   })
 
@@ -246,11 +252,14 @@ export function SimpleEditor({ content, onChange, }: SimpleEditorProps) {
     }
   }, [isMobile, mobileView])
 
+  const loaded = useRef(false);
+
   useEffect(() => {
-    if(content && content !== undefined){
-      editor?.commands.setContent(content);
-    }
-  }, [content, editor]);
+    if (!editor || !content || loaded.current) return;
+
+    editor.commands.setContent(content);
+    loaded.current = true;
+  }, [editor, content]);
 
   return (
     <div className="simple-editor-wrapper">

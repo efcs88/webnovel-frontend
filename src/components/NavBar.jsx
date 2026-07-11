@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Router } from 'next/navigation';
 import React, { useState } from 'react'
-
+import { ThemeToggle } from './toggleTheme';
 const NavBar = () => {
   
   const [isLogin, setLogin] = useState(false);

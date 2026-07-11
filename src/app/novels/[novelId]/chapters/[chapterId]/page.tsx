@@ -3,6 +3,7 @@ import { useParams } from "next/navigation"
 import SideBar from "@/src/components/SideBar"
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor'
 import { useEffect, useState } from "react"
+import type { JSONContent } from "@tiptap/core"
 import axios from "axios"
 
 interface Chapter {
@@ -15,7 +16,7 @@ interface Chapter {
 export default function Capitulo( ) {
     const { novelId, chapterId } = useParams();
     const [chapter, setChapter] = useState<Chapter | null>(null);
-    const [content, setContent] = useState("");
+    const [content, setContent] = useState<JSONContent | undefined>(undefined);
     const [isSaving, setIsSaving] = useState(false);
 
     const getChapter = async () => {
@@ -26,7 +27,7 @@ export default function Capitulo( ) {
           }
         });
         setChapter(response.data);
-        setContent(response.data.content);
+        setContent(JSON.parse(response.data.content) as JSONContent);
       }catch (error) {
         if( axios.isAxiosError(error) && error.response?.status === 403){
           try{
@@ -50,8 +51,9 @@ export default function Capitulo( ) {
       console.log("Guardando capitulo:", chapterId, "con contenido:", content);
       await axios.post("/api/save-chapter", {
         id: chapterId,
-        content: content
+        content: JSON.stringify(content)
       });
+
     };
 
     useEffect(() => {
@@ -62,19 +64,28 @@ export default function Capitulo( ) {
 
 
     useEffect( () => {
-      console.log("Content", content)
+      
     },[content]);
+
 
 
     return (
         <SideBar>
             <div className="h-screen flex flex-col">
-                <h1 className="text-center py-4">{chapter?.title}</h1>
-                <div className="items-center justify-center">
-                    <SimpleEditor 
-                    content={content}
-                    onChange={(e) =>  setContent}/>
-                </div>
+              {chapter && (
+                <>
+                  <div className="flex flex-col">
+                    <h1 className="text-center py-4">{chapter.title}</h1>
+                    <button className="btn btn-primary">Guardar</button>
+                  </div>
+                  <div className="items-center justify-center flex flex-col">
+                    <SimpleEditor
+                      content={content}
+                      onChange={setContent}
+                    />
+                  </div>
+                </>
+              )}
             </div>
         </SideBar>
     )
