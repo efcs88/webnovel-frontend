@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import type { JSONContent } from "@tiptap/core"
 import axios from "axios"
 
+
 interface Chapter {
     id: number,
     title: string,
@@ -48,20 +49,31 @@ export default function Capitulo( ) {
     };
 
     const saveChapter = async () => {
-      console.log("Guardando capitulo:", chapterId, "con contenido:", content);
-      await axios.post("/api/save-chapter", {
-        id: chapterId,
-        content: JSON.stringify(content)
-      });
+      try{
+        const response = await axios.put(
+          "/api/save-chapter",
+          {
+            title: chapter?.title,
+            content: JSON.stringify(content)
+          },
+          {
+            headers: {
+              chapterId: chapterId
+            }
+          }
+        );
+        if(response.status === 200){
+          console.log("contenido guardado")
+        }
+      }catch(error){
+        console.log(error)
+      }
 
     };
 
     useEffect(() => {
       getChapter();
     }, []);
-
-
-
 
     useEffect( () => {
       
@@ -76,7 +88,8 @@ export default function Capitulo( ) {
                 <>
                   <div className="flex flex-col">
                     <h1 className="text-center py-4">{chapter.title}</h1>
-                    <button className="btn btn-primary">Guardar</button>
+                    <button className="btn btn-primary"
+                    onClick={saveChapter}>Guardar</button>
                   </div>
                   <div className="items-center justify-center flex flex-col">
                     <SimpleEditor
