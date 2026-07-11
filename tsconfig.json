@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "src/components/NavBar.jsx", "src/components/Hero.sx"  ],
+, "src/components/NavBar.jsx", "src/components/Hero.sx", "src/components/Editor.jsx", "src/app/novels/[novelId]/chapters/[chapterId]/page.tsx"  ],
   "exclude": ["node_modules"]
 }

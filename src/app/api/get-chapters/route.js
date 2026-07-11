@@ -8,7 +8,6 @@ export async function GET(request) {
         const cookieStore = await cookies();
         const token = cookieStore.get("accessToken");
         const  novelId = request.headers.get("novelId");
-        console.log("novelId", novelId);
         const response = await axios.get(
             `${process.env.BACKEND_URL}/chapters/novel/${novelId}`,
             {
