@@ -42,15 +42,21 @@ export default function Login() {
   return (
     <div>
       <NavBar/>
-      <div className='flex justify-center h-screen'>
-        <form className='space-y-6' onSubmit={handleSubmit}>
-          <label className='block text-2xl font-medium'>Cree una cuenta</label>
-           <div className="divider"></div>
-            <div className='form-control'>
-              {messageError && <label className='block text-sm font-medium text-red-600'>{messageError}</label>}
-              <div className='mt-1'>
-                <label className='block text-sm font-medium text-gray-700'>email</label>
-                <input 
+      <div className='flex justify-center items-center min-h-screen bg-base-200 px-4'>
+        <form className='card w-full max-w-md bg-base-100 shadow-xl space-y-6 p-8' onSubmit={handleSubmit}>
+          <label className='block text-2xl font-bold text-center'>Inicie sesión</label>
+          <div className="divider"></div>
+          <div className='form-control space-y-4'>
+            {messageError && (
+              <div role="alert" className="alert alert-error py-2 text-sm">
+                <label className='block text-sm font-medium'>{messageError}</label>
+              </div>
+            )}
+            <div className='mt-1 form-control w-full'>
+              <label className='label'>
+                <span className='label-text font-medium'>email</span>
+              </label>
+              <input 
                 id='email' 
                 name='email' 
                 type='email'
@@ -59,12 +65,14 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder='email'
-                className='appearance-none text-white block w-150 px-3 p-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
-                /> 
-              </div>
-              <div className='mt-1'>
-                <label className='block text-sm font-medium text-gray-700'>Contraseña</label>
-                <input 
+                className='input input-bordered w-full focus:input-primary'
+              /> 
+            </div>
+            <div className='mt-1 form-control w-full'>
+              <label className='label'>
+                <span className='label-text font-medium'>Contraseña</span>
+              </label>
+              <input 
                 id="password" 
                 name='password' 
                 type='password'
@@ -72,22 +80,22 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} 
                 placeholder='Contraseña'
-                className='appearance-none text-white block w-full px-3 p-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'/>
-              </div>
-              {isLoading ? (
-                <div className='mt-2 flex justify-center items-center'>
-                  <span className='loading loading-spinner loading-md'></span>
-                  <button type='submit' disabled={true} className='btn btn-primary'>Singup</button>
-                </div>
-              ) : (
-                <div className='mt-2 flex justify-center items-center'>
-                  <button type='submit' className='btn btn-primary'>Singup</button>
-                </div>
-              )}
+                className='input input-bordered w-full focus:input-primary'
+              />
             </div>
+            {isLoading ? (
+              <div className='mt-2 flex justify-center items-center gap-2'>
+                <span className='loading loading-spinner loading-md'></span>
+                <button type='submit' disabled={true} className='btn btn-primary btn-wide'>Singup</button>
+              </div>
+            ) : (
+              <div className='mt-2 flex justify-center items-center'>
+                <button type='submit' className='btn btn-primary btn-wide'>Singup</button>
+              </div>
+            )}
+          </div>
         </form>
       </div>
-      
     </div>
   )
 }

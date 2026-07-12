@@ -3,22 +3,27 @@
 import { useRouter } from 'next/navigation';
 import { Router } from 'next/navigation';
 import React, { useState } from 'react'
-import { ThemeToggle } from './toggleTheme';
+import ToggleTheme  from "./toggleTheme"
+
 const NavBar = () => {
   
   const [isLogin, setLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLoginRedirect = () => {
+  const handleLoginRedirectLogin = () => {
     if(loading) return;
     setLoading(true);
     router.push("/login");
   }
+  const handleLoginRedirectSingup = () => {
+    router.push("/singup")
+  }
+
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">webnovel</a>
+        <a href='/' className="btn btn-ghost text-xl">webnovel</a>
       </div>
       
       <div className="flex-none">
@@ -48,11 +53,16 @@ const NavBar = () => {
         ):(
         <ul className='menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box'>
           <li>
-            <button onClick={handleLoginRedirect} className='btn btn-ghost' >
+            <ToggleTheme />
+          </li>
+          <li>
+            <button onClick={handleLoginRedirectLogin} className='btn btn-ghost' >
               {loading ? "Cargando..." : "Login"}
             </button>
           </li>
-          <li><a href="registro">Singup</a></li>
+          <button onClick={handleLoginRedirectSingup} className='btn btn-ghost'>
+            Singup
+          </button>
         </ul>
       )}
       </div>

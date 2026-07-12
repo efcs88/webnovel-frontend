@@ -5,7 +5,7 @@ import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor
 import { useEffect, useState } from "react"
 import type { JSONContent } from "@tiptap/core"
 import axios from "axios"
-
+import toast from "react-hot-toast"
 
 interface Chapter {
     id: number,
@@ -49,8 +49,8 @@ export default function Capitulo( ) {
     };
 
     const saveChapter = async () => {
-      try{
-        const response = await axios.put(
+      toast.promise(
+        axios.put(
           "/api/save-chapter",
           {
             title: chapter?.title,
@@ -61,14 +61,13 @@ export default function Capitulo( ) {
               chapterId: chapterId
             }
           }
-        );
-        if(response.status === 200){
-          console.log("contenido guardado")
+        ),
+        {
+          loading: 'Guardando...',
+          success: 'Guardado',
+          error: 'No se pudo guardar',
         }
-      }catch(error){
-        console.log(error)
-      }
-
+      );
     };
 
     useEffect(() => {
@@ -82,7 +81,7 @@ export default function Capitulo( ) {
 
 
     return (
-        <SideBar>
+        <SideBar >
             <div className="h-screen flex flex-col">
               {chapter && (
                 <>

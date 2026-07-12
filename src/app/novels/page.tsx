@@ -74,13 +74,13 @@ export default function Novels() {
                     </button>
                   </li>
                 </ul>
-                <ModalCrearNovela/>
                 </React.Fragment>
             ))
           ) : (
             <ModalCrearNovela />
           )}
         </div>
+          <ModalCrearNovela/>
       </div>
     </SideBar>
   );

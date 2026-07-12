@@ -4,6 +4,7 @@ import SideBar from "@/src/components/SideBar"
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"
+import ModalEliminarCapitulo from "@/src/components/ModalEliminarCapitulo";
 
 interface Chapter {
     id: number,
@@ -15,6 +16,7 @@ interface Chapter {
 export default function Capitulos() {
 
     const [chapters, setChapters] = useState<Chapter[]>([]);
+    const [selectedChapterId, setSelectedChapterId] = useState<string>("");
     const router = useRouter();
 
     const { novelId } = useParams();
@@ -53,6 +55,7 @@ export default function Capitulos() {
 
     return (
         <SideBar>
+
             <div className="h-screen flex flex-col">
                 <h1 className="text-center py-4">Tus capítulos</h1>
                 <div className="items-center justify-center">
@@ -72,20 +75,26 @@ export default function Capitulos() {
                           <tr key={chapter.id}>
                             <th>{index+1}</th>
                             <td>{chapter.title}</td>
-                            <td>{chapter.content}</td>
+                            <td>
+                              {chapter.content
+                                ? (() => {
+                                    const text = JSON.parse(chapter.content).content?.[0]?.content?.[0]?.text ?? "";
+                                    return text.length > 50 ? text.substring(0, 50) + "..." : text;
+                                  })()
+                                : "Capítulo vacío"}
+                            </td>
                             <td>
                               <button onClick={() => verNovela(chapter.id)} className="btn btn-primary btn-ghost">
                                    Ver
                               </button>
-                              <button className="btn btn-error btn-ghost">
-                                Eliminar
-                              </button>
+                                <ModalEliminarCapitulo chapterId={String(chapter.id)}/>
                             </td>
                           </tr>
                         ))}
                     </tbody>
                       </table>
                     </div>
+                    
                     <ModalCrearCapitulo novelId={String(novelId)}/>
                 </div>
             </div>
