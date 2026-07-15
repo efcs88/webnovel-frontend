@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface ChapterModalProps {
-  chapterId?: string;
+  novelId?: string;
   onDelete: () => Promise<void>;
 }
 
-const ModalEliminarCapitulo = ({ chapterId, onDelete }: ChapterModalProps) => {
+const ModalEliminarNovela = ({ novelId, onDelete }: ChapterModalProps) => {
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -25,10 +25,10 @@ const ModalEliminarCapitulo = ({ chapterId, onDelete }: ChapterModalProps) => {
     setIsLoading(true);
     setMessageError("");
     const formData = new FormData();
-    formData.append("chapterId", String(chapterId));
+    formData.append("novelId", String(novelId));
 
     try {
-      const response = await fetch("/api/eliminar-capitulo", {
+      const response = await fetch("/api/eliminar-novela", {
         method: "DELETE",
         body: formData,
       });
@@ -36,11 +36,11 @@ const ModalEliminarCapitulo = ({ chapterId, onDelete }: ChapterModalProps) => {
       const data = await response.json();
 
       if (!response.ok) {
-        setMessageError(data.message ?? "No se pudo eliminar el capítulo");
+        setMessageError(data.message ?? "No se pudo eliminar el novela");
       } else {
         await onDelete();
         closeModal();
-        toast.success("Capítulo eliminado");
+        toast.success("Novela eliminado");
       }
     } catch (error) {
       setMessageError("Ocurrió un error inesperado");
@@ -55,18 +55,18 @@ const ModalEliminarCapitulo = ({ chapterId, onDelete }: ChapterModalProps) => {
         className="btn btn-outline btn-error"
         onClick={() => dialogRef.current?.showModal()}
       >
-        Eliminar capítulo
+        Eliminar novela
       </button>
 
       <dialog ref={dialogRef} className="modal">
         <form onSubmit={handleDelete} className="space-y-4">
           <div className="modal-box">
-            <h3 className="font-bold text-xl">Eliminar capítulo</h3>
+            <h3 className="font-bold text-xl">Eliminar novela</h3>
 
-            <p className="py-2 text-sm opacity-70">
-              ¿Seguro que deseas eliminar este capítulo?
+            <p className="py-2 text-sm ">
+              ¿Seguro que deseas eliminar esta novela?
             </p>
-
+            <p className="py-2 text-sm">NOTA:No debe contener ningun capitulo</p>
             {messageError && (
               <div className="alert alert-error">
                 <span>{messageError}</span>
@@ -97,4 +97,4 @@ const ModalEliminarCapitulo = ({ chapterId, onDelete }: ChapterModalProps) => {
   );
 };
 
-export default ModalEliminarCapitulo;
+export default ModalEliminarNovela;

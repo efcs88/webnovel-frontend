@@ -2,6 +2,7 @@
 
 import SideBar from '@/src/components/SideBar';
 import ModalCrearNovela from '@/src/components/ModalCrearNovela';
+import ModalEliminarNovela from '@/src/components/ModalEliminarNovela';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -23,6 +24,7 @@ export default function Novels() {
     try {
       const response = await axios.get("/api/get-novels");
       setNovels(response.data);
+      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         //console.log("Status:", error.response?.status);
@@ -44,6 +46,7 @@ export default function Novels() {
 
   useEffect(() => {
     getNovels();
+   
   }, []);
 
   const verNovela = (id: number) => {
@@ -69,9 +72,10 @@ export default function Novels() {
                     <button onClick={() => verNovela(novel.id)} className="btn btn-primary btn-ghost">
                       Ver
                     </button>
-                    <button className="btn btn-error btn-ghost">
-                      Eliminar
-                    </button>
+                    <ModalEliminarNovela 
+                      novelId={String(novel.id)}
+                      onDelete={getNovels}
+                    />
                   </li>
                 </ul>
                 </React.Fragment>

@@ -87,7 +87,10 @@ export default function Capitulos() {
                               <button onClick={() => verNovela(chapter.id)} className="btn btn-primary btn-ghost">
                                    Ver
                               </button>
-                                <ModalEliminarCapitulo chapterId={String(chapter.id)}/>
+                              <ModalEliminarCapitulo
+                                  chapterId={String(chapter.id)}
+                                  onDelete={getChapters}
+                              />
                             </td>
                           </tr>
                         ))}
